@@ -169,6 +169,7 @@ int main(int argc, char** argv) {
 	vector<Entry> entries;
 
 	if (option_e) {
+		// TODO: This should actually emit a template that this program can process...
 		vector<wstring> vec;
 		repeat(levels)
 			vec.push_back(L"NoSymbol");
