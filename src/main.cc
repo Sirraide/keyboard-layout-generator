@@ -39,9 +39,12 @@ void fatal(function<void(void)> lambda, string message) {
 void PrintUsage() {
 	cerr << "Usage: gen [<file> -<number> | -e] -o <ofile>\n"
 			"\t<number> of levels must be a power of 2 that is >= 4.\n"
-			"\t-e generates an empty keymap template\n\n"
+			"\t-e generates an empty keymap template.\n\n"
 			"\t' ', ',', ';', '\\t', '\\r', '\\n' must be escaped,\n"
-			"\tuse 'space', 'comma', 'semicolon', 'tab', 'cr', 'lf' instead\n\n";
+			"\tuse 'space', 'comma', 'semicolon', 'tab', 'cr', 'lf' instead.\n\n"
+			"\tFor TLDE, write AC12 or C12.\n"
+			"\tFor BKSL AB00 or B0.\n";
+
 	exit(1);
 }
 
@@ -137,6 +140,7 @@ struct Entry {
 };
 
 wstring ustring(const wstring& str) {
+	if (str == L"NoSymbol") return str;
 	wstring ret;
 	for (auto c : str)
 		ret += fmt::format(L"U{:04X}", c);
@@ -150,8 +154,13 @@ void EmitKeymap(wofstream& ofile, const vector<Entry>& entries) {
 			ofile << L"\n";
 			continue;
 		}
+
 		ofile << L"\tkey <";
-		if (e.column)
+		if ((e.row == L"C" && e.column == 12) || (e.row == L"B" && e.column == 0)) {
+			if (e.column) ofile << L"TLDE"; // TLDE = AC12
+			else
+				ofile << L"BKSL"; // BKSL = AB00
+		} else if (e.column)
 			ofile << L"A" << e.row << ((e.column < 10) ? L"0" : L"") << e.column;
 		else /* handle TLDE, BKSL */
 			ofile << e.row;
@@ -165,38 +174,39 @@ int main(int argc, char** argv) {
 
 	HandleArguments(argc, argv);
 
-	wofstream	  ofile{ofname};
 	vector<Entry> entries;
 
 	if (option_e) {
-		// TODO: This should actually emit a template that this program can process...
+		wofstream		ofile{"keymaptemplate.txt"};
 		vector<wstring> vec;
 		repeat(levels)
 			vec.push_back(L"NoSymbol");
 
 		repeat(12)
-			entries.push_back({L"E", static_cast<long>(iter__ + 1), vec});
+				ofile
+			<< "E" << iter__ + 1 << L" " << vec << L";\n";
 
-		entries.push_back({L"[[newline]]", 0, {}});
+		ofile << L"\n";
 
 		repeat(12)
-			entries.push_back({L"D", static_cast<long>(iter__ + 1), vec});
+				ofile
+			<< "D" << iter__ + 1 << L" " << vec << L";\n";
 
-		entries.push_back({L"[[newline]]", 0, {}});
+		ofile << L"\n";
+
+		repeat(12)
+				ofile
+			<< "C" << iter__ + 1 << L" " << vec << L";\n";
+
+		ofile << L"\n";
 
 		repeat(11)
-			entries.push_back({L"C", static_cast<long>(iter__ + 1), vec});
-		entries.push_back({L"TLDE", 0, vec});
-
-		entries.push_back({L"[[newline]]", 0, {}});
-
-		entries.push_back({L"BKSL", 0, vec});
-		repeat(10)
-			entries.push_back({L"B", static_cast<long>(iter__ + 1), vec});
-
-		EmitKeymap(ofile, entries);
+				ofile
+			<< "B" << iter__ + 1 << L" " << vec << L";\n";
 		return 0;
 	}
+
+	wofstream ofile{ofname};
 
 	FILE* infile = fopen(ifname.c_str(), "r");
 
@@ -230,14 +240,10 @@ int main(int argc, char** argv) {
 
 		if (!regex_match(ibuf, key)) lineerror(lineno, "Syntax error");
 
-		bool empty = true;
-		for (auto c : ibuf) {
-			if (!isspace(c)) {
-				empty = false;
-				break;
-			}
-		}
-		if (empty) continue;
+		for (auto c : ibuf)
+			if (!isspace(c)) goto no_cont;
+		continue;
+	no_cont:
 
 		auto it	 = ibuf.begin();
 		auto end = ibuf.end();
