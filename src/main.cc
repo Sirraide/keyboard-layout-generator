@@ -11,6 +11,7 @@
 #include <regex>
 #include <string>
 #include <utility>
+#include <vector>
 
 #define RED "\u001b[31m"
 #define RESET "\u001b[0m"
@@ -19,24 +20,24 @@
 
 using namespace std;
 
-int	   levels = 0;
-string ifname, ofname;
+static int	  levels = 0;
+static string ifname, ofname;
 
 void wrred(string str) {
 	cerr << RED << str << RESET << "\n";
 }
 
-void fatal(string message) {
+void fatal [[noreturn]] (string message) {
 	wrred(string("Error: ") + message);
 	exit(1);
 }
 
-void fatal(function<void(void)> lambda, string message) {
+void fatal [[noreturn]] (function<void(void)> lambda, string message) {
 	lambda();
 	fatal(message);
 }
 
-void PrintUsage() {
+void PrintUsage [[noreturn]] () {
 	cerr << "Usage: gen [<file> -<number> | -e] -o <ofile>\n"
 			"\t<number> of levels must be a power of 2 that is >= 4.\n"
 			"\t-e generates an empty keymap template.\n\n"
@@ -121,6 +122,7 @@ bool iswspace(const wstring& str) {
 
 template <typename T, typename A>
 wostream& operator<<(wostream& os, const vector<T, A>& v) {
+	if (v.empty()) return os;
 	size_t s = 0;
 	for (size_t len = v.size(); s < len - 1; ++s)
 		os << v[s] << ", ";
@@ -132,23 +134,24 @@ struct Entry {
 	wstring			row;
 	long			column;
 	vector<wstring> chars;
-
-	Entry(wstring row, long column, vector<wstring>&& chars)
-		: row(row), column(column), chars(chars) {}
-	Entry(wstring row, long column, const vector<wstring>& chars)
-		: row(row), column(column), chars(chars) {}
+	vector<wstring> rawchars;
 };
 
 wstring ustring(const wstring& str) {
 	if (str == L"NoSymbol") return str;
+	if (str == L"comma") return str;
+	if (str == L"semicolon") return str;
+	if (str == L"space") return str;
 	wstring ret;
 	for (auto c : str)
 		ret += fmt::format(L"U{:04X}", c);
 	return ret;
 }
 
-void EmitKeymap(wofstream& ofile, const vector<Entry>& entries) {
-	ofile << L"default partial\nxkb_symbols \"basic\" {\n";
+vector<Entry> entries;
+
+void EmitKeymap(wofstream& ofile) {
+	ofile << L"default xkb_symbols \"basic\" {\n";
 	for (auto& e : entries) {
 		if (e.row == L"[[newline]]") {
 			ofile << L"\n";
@@ -156,17 +159,25 @@ void EmitKeymap(wofstream& ofile, const vector<Entry>& entries) {
 		}
 
 		ofile << L"\tkey <";
-		if ((e.row == L"C" && e.column == 12) || (e.row == L"B" && e.column == 0)) {
-			if (e.column) ofile << L"TLDE"; // TLDE = AC12
-			else
-				ofile << L"BKSL"; // BKSL = AB00
-		} else if (e.column)
+		if (e.row == L"C" && e.column == 12)
+			ofile << L"BKSL"; // BKSL = AB00
+		else if (e.row == L"E" && !e.column)
+			ofile << L"TLDE";
+		else if (e.row == L"B" && !e.column)
+			ofile << L"LSGT";
+		else if (e.column)
 			ofile << L"A" << e.row << ((e.column < 10) ? L"0" : L"") << e.column;
 		else /* handle TLDE, BKSL */
 			ofile << e.row;
-		ofile << L">  { [" << e.chars << L"] };\n";
+		ofile << L">  { [" << e.chars << L"] };"; // ";
+		//ofile << e.rawchars;
+		ofile << L"\n";
 	}
 	ofile << L"};\n";
+	if (!ofile || ofile.bad()) {
+		wcerr << L"Error: ofile corrupted";
+		exit(1);
+	}
 }
 
 int main(int argc, char** argv) {
@@ -174,17 +185,15 @@ int main(int argc, char** argv) {
 
 	HandleArguments(argc, argv);
 
-	vector<Entry> entries;
-
 	if (option_e) {
 		wofstream		ofile{"keymaptemplate.txt"};
 		vector<wstring> vec;
 		repeat(levels)
 			vec.push_back(L"NoSymbol");
 
-		repeat(12)
+		repeat(13)
 				ofile
-			<< "E" << iter__ + 1 << L" " << vec << L";\n";
+			<< "E" << iter__ << L" " << vec << L";\n";
 
 		ofile << L"\n";
 
@@ -202,13 +211,21 @@ int main(int argc, char** argv) {
 
 		repeat(11)
 				ofile
-			<< "B" << iter__ + 1 << L" " << vec << L";\n";
+			<< "B" << iter__ << L" " << vec << L";\n";
 		return 0;
 	}
 
 	wofstream ofile{ofname};
+	if (!ofile || ofile.bad()) {
+		wcerr << L"Error: cannot open output file";
+		return 1;
+	}
 
 	FILE* infile = fopen(ifname.c_str(), "r");
+	if (!infile) {
+		wcerr << L"Error: cannot open input file";
+		return 1;
+	}
 
 	wstring ibuf, obuf;
 	wchar_t c = L' ';
@@ -240,8 +257,8 @@ int main(int argc, char** argv) {
 
 		if (!regex_match(ibuf, key)) lineerror(lineno, "Syntax error");
 
-		for (auto c : ibuf)
-			if (!isspace(c)) goto no_cont;
+		for (auto cc : ibuf)
+			if (!isspace(cc)) goto no_cont;
 		continue;
 	no_cont:
 
@@ -258,17 +275,23 @@ int main(int argc, char** argv) {
 		SkipWhitespace(it, end);
 
 		vector<wstring> chars;
+		vector<wstring> rawchars;
 
 		for (;;) {
-			chars.push_back(ustring(CollectChars(it, end)));
+			const wstring cs = CollectChars(it, end);
+			chars.push_back(ustring(wstring(cs)));
+			rawchars.push_back(wstring(cs));
+
 			if (*(it++) == L';') break;
 		}
 
 		for (auto& el : chars)
 			if (el.empty()) el = L"NoSymbol";
-		entries.push_back({wstring() + static_cast<wchar_t>(towupper(cls)), which, move(chars)});
+		for (auto& el : rawchars)
+			if (el.empty()) el = L"NoSymbol";
+		entries.push_back({wstring() + static_cast<wchar_t>(towupper(cls)), which, chars, rawchars});
 	}
 _write:
 	if (err) return 0;
-	EmitKeymap(ofile, entries);
+	EmitKeymap(ofile);
 }

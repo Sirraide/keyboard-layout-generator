@@ -3,7 +3,6 @@ headers = $(wildcard src/*.h)
 LIBS = -lstdc++ -lfmt
 CXX=clang
 CXXFLAGS = -Wall -Wextra -Wundef -std=c++2a
-
 gen: $(src) $(headers)
 	$(CXX) $(CXXFLAGS) $(src) $(LIBS) -o $@ -O3
 
