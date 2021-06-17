@@ -42,9 +42,11 @@ void PrintUsage [[noreturn]] () {
 			"\t<number> of levels must be a power of 2 that is >= 4.\n"
 			"\t-e generates an empty keymap template.\n\n"
 			"\t' ', ',', ';', '\\t', '\\r', '\\n' must be escaped,\n"
-			"\tuse 'space', 'comma', 'semicolon', 'tab', 'cr', 'lf' instead.\n\n"
-			"\tFor TLDE, write AC12 or C12.\n"
-			"\tFor BKSL AB00 or B0.\n";
+			"\tuse 'space', 'comma', 'semicolon', 'tab', 'cr', 'lf' instead\n"
+			"\t(however, only the first three are supported as of now).\n\n"
+			"\tFor BKSL, write C12.\n"
+			"\tFor TLDE, write E0.\n"
+			"\tFor LSGT, write B0.\n";
 
 	exit(1);
 }
@@ -160,18 +162,16 @@ void EmitKeymap(wofstream& ofile) {
 
 		ofile << L"\tkey <";
 		if (e.row == L"C" && e.column == 12)
-			ofile << L"BKSL"; // BKSL = AB00
+			ofile << L"BKSL";
 		else if (e.row == L"E" && !e.column)
 			ofile << L"TLDE";
 		else if (e.row == L"B" && !e.column)
 			ofile << L"LSGT";
 		else if (e.column)
 			ofile << L"A" << e.row << ((e.column < 10) ? L"0" : L"") << e.column;
-		else /* handle TLDE, BKSL */
+		else
 			ofile << e.row;
-		ofile << L">  { [" << e.chars << L"] };"; // ";
-		//ofile << e.rawchars;
-		ofile << L"\n";
+		ofile << L">  { [" << e.chars << L"] };\n";
 	}
 	ofile << L"};\n";
 	if (!ofile || ofile.bad()) {

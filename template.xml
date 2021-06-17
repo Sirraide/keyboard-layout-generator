@@ -1,0 +1,13 @@
+    <layout>
+      <configItem>
+        <name>tmptilde</name>
+        <!-- tmptilde -->
+        <shortDescription>tmptilde</shortDescription>
+        <description>tmptilde (tmptilde)</description>
+        <languageList>
+          <iso639Id>eng</iso639Id>
+        </languageList>
+      </configItem>
+      <variantList>
+      </variantList>
+    </layout>
