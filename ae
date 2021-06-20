@@ -1,0 +1,60 @@
+default xkb_symbols "basic" {
+	name[Group1]="English with IPA";
+
+	key.type[Group1] = "EIGHT_LEVEL";
+	key <TLDE>  { [dead_macron, dead_breve, dead_diaeresis, U00AC, U0361, U035C, NoSymbol, NoSymbol] };
+	key <AE01>  { [U0031, U0021, U00A1, NoSymbol, NoSymbol, NoSymbol, NoSymbol, NoSymbol] };
+	key <AE02>  { [U0032, U003F, U00BF, U00B2, U03BB, NoSymbol, NoSymbol, NoSymbol] };
+	key <AE03>  { [U0033, U00A3, U00A6, U00B3, NoSymbol, NoSymbol, NoSymbol, NoSymbol] };
+	key <AE04>  { [U0034, U0024, U00A7, U00BC, NoSymbol, NoSymbol, NoSymbol, NoSymbol] };
+	key <AE05>  { [U0035, U0025, U2116, U00BD, NoSymbol, NoSymbol, NoSymbol, NoSymbol] };
+	key <AE06>  { [U0036, U0023, U204A, U00BE, NoSymbol, NoSymbol, NoSymbol, NoSymbol] };
+	key <AE07>  { [U0037, U0026, U201C, U201E, NoSymbol, NoSymbol, NoSymbol, NoSymbol] };
+	key <AE08>  { [U0038, U002A, U201D, U2022, NoSymbol, NoSymbol, NoSymbol, NoSymbol] };
+	key <AE09>  { [U0039, U0028, U2018, U201A, NoSymbol, NoSymbol, NoSymbol, NoSymbol] };
+	key <AE10>  { [U0030, U0029, U2019, U00B0, NoSymbol, NoSymbol, NoSymbol, NoSymbol] };
+	key <AE11>  { [U002D, U005F, U2013, U2014, NoSymbol, NoSymbol, NoSymbol, NoSymbol] };
+	key <AE12>  { [U003D, U002B, U00D7, U00F7, U00B1, U2213, NoSymbol, NoSymbol] };
+	key <AD01>  { [U0071, U0051, U0040, U2205, U0262, U02E4, U029B, U01C1] };
+	key <AD02>  { [U0077, U0057, U01BF, U01F7, U028D, U02B7, U02E0, NoSymbol] };
+	key <AD03>  { [U0065, U0045, U20AC, U00A2, U025B, U025C, U0258, NoSymbol] };
+	key <AD04>  { [U0072, U0052, U027E, U02DE, U0279, U027B, U0281, U0280] };
+	key <AD05>  { [U0074, U0054, U00FE, U00DE, U0288, U03B8, U1DBF, U027A] };
+	key <AD06>  { [U0079, U0059, U2020, U2021, U0259, U028F, U0339, U031C] };
+	key <AD07>  { [U0075, U0055, U00F8, U00D8, U028A, U026F, U0289, U0276] };
+	key <AD08>  { [U0069, U0049, U0131, U0130, U026A, U0268, U0308, U033D] };
+	key <AD09>  { [U006F, U004F, U0153, U0152, U0254, U0264, U025E, U0275] };
+	key <AD10>  { [U0070, U0050, U2042, U2034, U03C0, U02DE, NoSymbol, NoSymbol] };
+	key <AD11>  { [U005B, U007B, U27E8, NoSymbol, U00AB, U2039, U2AFD, U27E6] };
+	key <AD12>  { [U005D, U007D, U27E9, NoSymbol, U00BB, U203A, U2AFD, U27E7] };
+	key <AC01>  { [U0061, U0041, U00E6, U00C6, U0251, U0252, U0252, U028C] };
+	key <AC02>  { [U0073, U0053, U00DF, U1E9E, U026C, U026E, U017F, NoSymbol] };
+	key <AC03>  { [U0064, U0044, U00F0, U00D0, U0256, NoSymbol, U0257, U01C0] };
+	key <AC04>  { [U0066, U0046, U0278, NoSymbol, U0283, U0282, U0255, NoSymbol] };
+	key <AC05>  { [U0067, U0047, U021D, U021C, U0263, U0270, U0260, U01C2] };
+	key <AC06>  { [U0068, U0048, U0127, U0126, U0266, U0267, U029C, NoSymbol] };
+	key <AC07>  { [U006A, U004A, U0237, U02B2, U0265, U032A, U0346, NoSymbol] };
+	key <AC08>  { [U006B, U004B, U029E, U0295, U0294, U02A1, U02A2, U2122] };
+	key <AC09>  { [U006C, U004C, U0142, U0141, U028E, U029F, U026D, U026B] };
+	key <AC10>  { [semicolon, colon, U00B6, NoSymbol, NoSymbol, NoSymbol, NoSymbol, NoSymbol] };
+	key <AC11>  { [U0027, U0022, U2032, U2033, NoSymbol, NoSymbol, NoSymbol, NoSymbol] };
+	key <BKSL>  { [dead_circumflex, dead_caron, dead_tilde, dead_belowtilde, dead_belowdiaeresis, NoSymbol, NoSymbol, NoSymbol] };
+	key <LSGT>  { [dead_acute, dead_grave, dead_doubleacute, dead_doublegrave, NoSymbol, NoSymbol, NoSymbol, NoSymbol] };
+	key <AB01>  { [U007A, U005A, U0292, U01B7, U0329, U030D, U032F, U0311] };
+	key <AB02>  { [U0078, U0058, U00AE, U00A9, U03C7, NoSymbol, U02B0, U02B1] };
+	key <AB03>  { [U0063, U0043, U025F, NoSymbol, U00E7, U029D, U0284, U01C3] };
+	key <AB04>  { [U0076, U0056, U03B2, U028B, U0292, U0290, U0291, NoSymbol] };
+	key <AB05>  { [U0062, U0042, NoSymbol, NoSymbol, U2C71, U0299, U0253, U0298] };
+	key <AB06>  { [U006E, U004E, U014B, U014A, U0272, U0273, U0274, U207F] };
+	key <AB07>  { [U006D, U004D, U00B5, U0271, U031F, U0320, U02D6, U02D7] };
+	key <AB08>  { [comma, U003C, dead_ogonek, dead_cedilla, NoSymbol, NoSymbol, NoSymbol, NoSymbol] };
+	key <AB09>  { [U002E, U003E, U00B7, U0307, dead_belowring, dead_abovering, U032C, NoSymbol] };
+	key <AB10>  { [U002F, U005C, U007C, U0323, NoSymbol, NoSymbol, NoSymbol, NoSymbol] };
+
+	key.type[Group1] = "ONE_LEVEL";
+	key <RALT> { [ ISO_Level3_Shift ] };
+	key <MENU> { [ ISO_Level5_Shift ] };
+
+	include "level3(modifier_mapping)"
+	include "level5(modifier_mapping)"
+};

@@ -1,0 +1,53 @@
+Vt include "level3(ralt_switch)"
+
+E0 :dead_macron, :dead_breve, :dead_diaeresis, ¬, :U0361, :U035C, , ;
+E1 1, !, ¡, , , , , ;
+E2 2, ?, ¿, ², λ, , , ;
+E3 3, £, ¦, ³, , , , ;
+E4 4, $, §, ¼, , , , ;
+E5 5, %, №, ½, , , , ;
+E6 6, #, ⁊, ¾, , , , ;
+E7 7, &, “, „, , , , ;
+E8 8, *, ”, •, , , , ;
+E9 9, (, ‘, ‚, , , , ;
+E10 0, ), ’, °, , , , ;
+E11 -, _, –, —, , , , ;
+E12 =, +, ×, ÷, ±, ∓, , ;
+
+D1 q, Q, @, ∅, ɢ, ˤ, ʛ, ǁ;
+D2 w, W, ƿ, Ƿ, ʍ, ʷ, ˠ, ;
+D3 e, E, €, ¢, ɛ, ɜ, ɘ, ;
+D4 r, R, ɾ, ˞, ɹ, ɻ, ʁ, ʀ;
+D5 t, T, þ, Þ, ʈ, θ, ᶿ, ɺ;
+D6 y, Y, †, ‡, ə, ʏ, :U0339, :U031C;
+D7 u, U, ø, Ø, ʊ, ɯ, ʉ, ɶ;
+D8 i, I, ı, İ, ɪ, ɨ, :U0308, :U033D;
+D9 o, O, œ, Œ, ɔ, ɤ, ɞ, ɵ;
+D10 p, P, ⁂, ‴, π, :U02DE, , ;
+D11 [, {, ⟨, , «, ‹, ⫽, ⟦;
+D12 ], }, ⟩, , », ›, ⫽, ⟧;
+
+C1 a, A, æ, Æ, ɑ, ɒ, ɒ, ʌ;
+C2 s, S, ß, ẞ, ɬ, ɮ, ſ, ;
+C3 d, D, ð, Ð, ɖ, , ɗ, ǀ;
+C4 f, F, ɸ, , ʃ, ʂ, ɕ, ;
+C5 g, G, ȝ, Ȝ, ɣ, ɰ, ɠ, ǂ;
+C6 h, H, ħ, Ħ, ɦ, ɧ, ʜ, ;
+C7 j, J, ȷ, ʲ, ɥ, :U032A, :U0346, ;
+C8 k, K, ʞ, ʕ, ʔ, ʡ, ʢ, ™;
+C9 l, L, ł, Ł, ʎ, ʟ, ɭ, ɫ;
+C10 semicolon, :colon, ¶, , , , , ;
+C11 ', ", ′, ″, , , , ;
+C12 :dead_circumflex, :dead_caron, :dead_tilde, :dead_belowtilde, :dead_belowdiaeresis, , , ;
+
+B0 :dead_acute, :dead_grave, :dead_doubleacute, :dead_doublegrave, , , , ;
+B1 z, Z, ʒ, Ʒ, :U0329, :U030D, :U032F, :U0311;
+B2 x, X, ®, ©, χ, , ʰ, ʱ;
+B3 c, C, ɟ, , ç, ʝ, ʄ, ǃ;
+B4 v, V, β, ʋ, ʒ, ʐ, ʑ, ;
+B5 b, B, , , ⱱ, ʙ, ɓ, ʘ;
+B6 n, N, ŋ, Ŋ, ɲ, ɳ, ɴ, ⁿ;
+B7 m, M, µ, ɱ, :U031F, :U0320, :U02D6, :U02D7;
+B8 comma, <, :dead_ogonek, :dead_cedilla, , , , ;
+B9 ., >, ·, ̇, :dead_belowring, :dead_abovering, :U032C, ;
+B10 /, \, |, ̣, , , , ;

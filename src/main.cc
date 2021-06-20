@@ -105,7 +105,7 @@ wstring CollectChars(wstring::iterator& it, const wstring::iterator& end) {
 	return buf;
 }
 
-const wregex key = wregex(L"(?:[ \t\r\n]*?A?[EDCBedcb]\\d+?(?:[ \t\r\n]*?([^;,])*?[ \t\r\n]*?,)*?[ \t\r\n]*?([^;,])*?[ \t\r\n]*?;)|(^\\s*?$)+");
+const wregex key = wregex(L"(?:[ \t\r\n]*?A?[EDCBedcb]\\d+?(?:[ \t\r\n]*?([^;,])*?[ \t\r\n]*?,)*?[ \t\r\n]*?([^;,])*?[ \t\r\n]*?;)|(^\\s*?$)+|^Vt?.*?\n");
 
 bool err = false;
 
@@ -136,7 +136,6 @@ struct Entry {
 	wstring			row;
 	long			column;
 	vector<wstring> chars;
-	vector<wstring> rawchars;
 };
 
 wstring ustring(const wstring& str) {
@@ -144,6 +143,7 @@ wstring ustring(const wstring& str) {
 	if (str == L"comma") return str;
 	if (str == L"semicolon") return str;
 	if (str == L"space") return str;
+	if (str.size() > 1 && str[0] == L':') return wstring(&str[1]);
 	wstring ret;
 	for (auto c : str)
 		ret += fmt::format(L"U{:04X}", c);
@@ -157,6 +157,11 @@ void EmitKeymap(wofstream& ofile) {
 	for (auto& e : entries) {
 		if (e.row == L"[[newline]]") {
 			ofile << L"\n";
+			continue;
+		}
+
+		if (e.row == L"V") {
+			ofile << e.chars[0] << L"\n";
 			continue;
 		}
 
@@ -232,19 +237,38 @@ int main(int argc, char** argv) {
 
 	int lineno = 1;
 
+#define next c = fgetwc(infile)
+
+outer:
 	while (!feof(infile)) {
 		ibuf.clear();
+		bool first = true;
 		if (!feof(infile))
 			while (c != L';') {
-				c = fgetwc(infile);
+				next;
 				if (c == L'\n') lineno++;
+				if (first && c == L'V') {
+					if (next, c == L't') {
+						ibuf = L'\t';
+						next;
+					}
+					if (isspace(c))
+						while (next, isspace(c))
+							;
+					ibuf += c;
+					while (next, c != EOF && c != L'\n') ibuf += c;
+					if (c != EOF) (void) fgetwc(infile); // yeet \n
+					entries.push_back({L"V", 0, {ibuf}});
+					goto outer;
+				}
+				first = false;
 				if (!feof(infile)) ibuf += c;
 				else
 					break;
 			}
 		if (ibuf.empty() || iswspace(ibuf)) {
 			if (!feof(infile)) {
-				c = fgetwc(infile);
+				next;
 				if (c == L'\n') lineno++;
 				continue;
 			}
@@ -252,7 +276,7 @@ int main(int argc, char** argv) {
 		}
 
 		if (c != L';') lineerror(lineno, "Incomplete declaration.");
-		c = fgetwc(infile);
+		next;
 		if (c == L'\n') lineno++;
 
 		if (!regex_match(ibuf, key)) lineerror(lineno, "Syntax error");
@@ -265,6 +289,11 @@ int main(int argc, char** argv) {
 		auto it	 = ibuf.begin();
 		auto end = ibuf.end();
 		SkipWhitespace(it, end);
+		bool verbatim = false;
+		if (*it == 'v') {
+			it++;
+			verbatim = true;
+		}
 		if (*it == L'A' || *it == L'a') it++;
 		wchar_t cls = *(it++);
 		long	which;
@@ -287,9 +316,7 @@ int main(int argc, char** argv) {
 
 		for (auto& el : chars)
 			if (el.empty()) el = L"NoSymbol";
-		for (auto& el : rawchars)
-			if (el.empty()) el = L"NoSymbol";
-		entries.push_back({wstring() + static_cast<wchar_t>(towupper(cls)), which, chars, rawchars});
+		entries.push_back({wstring() + static_cast<wchar_t>(towupper(cls)), which, chars});
 	}
 _write:
 	if (err) return 0;
