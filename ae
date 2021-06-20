@@ -36,8 +36,8 @@ default xkb_symbols "basic" {
 	key <AC07>  { [U006A, U004A, U0237, U02B2, U0265, U032A, U0346, NoSymbol] };
 	key <AC08>  { [U006B, U004B, U029E, U0295, U0294, U02A1, U02A2, U2122] };
 	key <AC09>  { [U006C, U004C, U0142, U0141, U028E, U029F, U026D, U026B] };
-	key <AC10>  { [semicolon, colon, U00B6, NoSymbol, NoSymbol, NoSymbol, NoSymbol, NoSymbol] };
-	key <AC11>  { [U0027, U0022, U2032, U2033, NoSymbol, NoSymbol, NoSymbol, NoSymbol] };
+	key <AC10>  { [semicolon, colon, U00B6, NoSymbol, U02D0, U02D1, NoSymbol, NoSymbol] };
+	key <AC11>  { [U0027, U0022, U2032, U2033, U02C8, U02CC, NoSymbol, NoSymbol] };
 	key <BKSL>  { [dead_circumflex, dead_caron, dead_tilde, dead_belowtilde, dead_belowdiaeresis, NoSymbol, NoSymbol, NoSymbol] };
 	key <LSGT>  { [dead_acute, dead_grave, dead_doubleacute, dead_doublegrave, NoSymbol, NoSymbol, NoSymbol, NoSymbol] };
 	key <AB01>  { [U007A, U005A, U0292, U01B7, U0329, U030D, U032F, U0311] };
